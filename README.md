@@ -126,3 +126,8 @@ Multi-line strings
 - `make watch-test` - (only on macOS) - run test on every file change
 - `make example` - export the example Logseq graph into the example Hugo site
 - `make watch-example` (only on macOS) - run `make example` on any file change
+
+## Releasing
+
+1. tag commit on `main` branch
+2. first push `main`, wait for pipeline to finish, then push the tag. Otherwise you [confuse goreleaser](https://blog.viktomas.com/graph/goreleaser-already-exists-error/).
