@@ -109,6 +109,12 @@ func removeTabFromMultiLevelBulletPoints(from string) string {
 	})
 }
 
+// finds first `- private` top level bullet point in the document and removes it and everything
+// that follows to the end of file
+func removePrivateContent(from string) string {
+	return regexp.MustCompile(`(?m:^- private.*$[\s\S]*)$`).ReplaceAllString(from, "")
+}
+
 const multilineBlocks = `\n?(- .*\n(?:  .*\n?)+)`
 
 /*
@@ -146,6 +152,7 @@ func parseContent(rawContent string) parsedContent {
 	content := applyStringTransformers(rawContent,
 		stripAttributes,
 		removeEmptyBulletPoints,
+		removePrivateContent,
 		unindentMultilineStrings,
 		firstBulletPointsToParagraphs,
 		// since we turned the first bullet points to paragraphs

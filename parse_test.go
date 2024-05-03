@@ -213,4 +213,17 @@ lines
 in
 one`, result.content)
 	})
+
+	t.Run("removes all content after - private", func(t *testing.T) {
+		result := parseContent(`
+- single line
+- private
+- multiple
+  lines
+  in
+  one`)
+		require.Equal(t, `
+single line
+`, result.content)
+	})
 }

@@ -4,6 +4,7 @@ Tool to export raw [Logseq](https://github.com/logseq/logseq) Markdown pages (wi
 
 - Takes Logseq page properties (`title:: Hello world`) and turns them into [Front Matter properties](https://gohugo.io/content-management/front-matter/) `title: Hello World`.
 - Changes the Markdown syntax to remove the top-level bullet points.
+- if you have top-level block `- private` in your file, `logseq-export` will remove it and all content that follows. I use it for copyrighted content like verbatim highlights/pictures from books.
 
 See an **example of a deployed graph** on [viktomas.github.io/logseq-export](https://viktomas.github.io/logseq-export/). The graph and the [Hugo](https://gohugo.io/) project can be found in the [example](/example/) folder. Run the example locally with ``
 
@@ -86,7 +87,7 @@ export BLOG_IMAGES_FOLDER="/assets/graph"
 
 ## From
 
-![logseq test page](./docs/assets/logseq-teset-page.png)
+![logseq test page](./docs/assets/logseq-teset-page-2.png)
 
 ## To
 

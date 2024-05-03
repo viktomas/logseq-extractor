@@ -3,13 +3,13 @@ module github.com/viktomas/logseq-export
 go 1.19
 
 require (
-	github.com/spf13/afero v1.9.2
-	github.com/stretchr/testify v1.8.1
-	golang.org/x/exp v0.0.0-20220921164117-439092de6870
-	github.com/knadh/koanf/v2 v2.0.1
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/basicflag v0.1.0
 	github.com/knadh/koanf/providers/file v0.1.0
+	github.com/knadh/koanf/v2 v2.0.1
+	github.com/spf13/afero v1.9.2
+	github.com/stretchr/testify v1.8.1
+	golang.org/x/exp v0.0.0-20220921164117-439092de6870
 )
 
 require (
