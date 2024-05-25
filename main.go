@@ -47,6 +47,8 @@ func loadPublicPages(appFS afero.Fs, logseqFolder string) ([]textFile, error) {
 		if info.IsDir() {
 			return nil
 		}
+		// publicFiles = append(publicFiles, path)
+		// return nil
 		file, err := appFS.OpenFile(path, os.O_RDONLY, os.ModePerm)
 		if err != nil {
 			return err
@@ -102,54 +104,69 @@ func Run(args []string) error {
 	}
 
 	// parse pages
-	parsedPages := make([]parsedPage, 0, len(publicPages))
 	for _, publicPage := range publicPages {
-		parsedPages = append(parsedPages, parsePage(publicPage))
-	}
+		parsedPage := parsePage(publicPage)
+		// write parsedPage.pc.content to a file located at parsedPage.originalPath using afero
 
-	err = exportAssets(appFS, config.OutputFolder, parsedPages)
-	if err != nil {
-		return fmt.Errorf("failed to export assets: %w", err)
-	}
-
-	titleToSlug := map[string]string{}
-	for _, p := range parsedPages {
-		titleToSlug[p.pc.attributes["title"]] = p.pc.attributes["slug"]
-	}
-
-	for _, page := range parsedPages {
-		exportPath := filepath.Join(config.OutputFolder, "logseq-pages", page.exportFilename)
-		folder, _ := filepath.Split(exportPath)
-		err = appFS.MkdirAll(folder, os.ModePerm)
-		if err != nil {
-			return fmt.Errorf("creating parent directory for %q failed: %v", exportPath, err)
-		}
-		// TODO: more processing on the content (linking pages, attributes)
-		contentWithAssets := replaceAssetPaths(page)
-		links := detectPageLinks(contentWithAssets)
-		for _, l := range links {
-			slug, ok := titleToSlug[l]
-			if !ok {
-				continue
-			}
-			contentWithAssets = strings.ReplaceAll(
-				contentWithAssets,
-				fmt.Sprintf("[[%s]]", l),
-				// we use path here on purpose since we create URL
-				fmt.Sprintf("[%s](%s)", l, path.Join("/logseq-pages", slug)),
-			)
-		}
-		// TODO find out what properties should I not quote
+		// err = afero.WriteFile(appFS, parsedPage.originalPath, []byte(parsedPage.pc.content), 0644)
+		// if err != nil {
+		// 	return fmt.Errorf("writing file %q failed: %v", parsedPage.originalPath, err)
+		// }
 		err = afero.WriteFile(
 			appFS,
-			exportPath,
-			[]byte(render(transformAttributes(page.pc.attributes, config.UnquotedProperties), contentWithAssets)),
+			parsedPage.originalPath,
+			[]byte(render(transformAttributes(parsedPage.pc.attributes, config.UnquotedProperties), parsedPage.pc.content)),
 			0644,
 		)
 		if err != nil {
-			return fmt.Errorf("copying file %q failed: %v", exportPath, err)
+			return fmt.Errorf("copying file %q failed: %v", parsedPage.originalPath, err)
 		}
+
 	}
+
+	// err = exportAssets(appFS, config.OutputFolder, parsedPages)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to export assets: %w", err)
+	// }
+
+	// titleToSlug := map[string]string{}
+	// for _, p := range parsedPages {
+	// 	titleToSlug[p.pc.attributes["title"]] = p.pc.attributes["slug"]
+	// }
+
+	// for _, page := range parsedPages {
+	// 	exportPath := filepath.Join(config.OutputFolder, "logseq-pages", page.exportFilename)
+	// 	folder, _ := filepath.Split(exportPath)
+	// 	err = appFS.MkdirAll(folder, os.ModePerm)
+	// 	if err != nil {
+	// 		return fmt.Errorf("creating parent directory for %q failed: %v", exportPath, err)
+	// 	}
+	// 	// TODO: more processing on the content (linking pages, attributes)
+	// 	contentWithAssets := replaceAssetPaths(page)
+	// 	links := detectPageLinks(contentWithAssets)
+	// 	for _, l := range links {
+	// 		slug, ok := titleToSlug[l]
+	// 		if !ok {
+	// 			continue
+	// 		}
+	// 		contentWithAssets = strings.ReplaceAll(
+	// 			contentWithAssets,
+	// 			fmt.Sprintf("[[%s]]", l),
+	// 			// we use path here on purpose since we create URL
+	// 			fmt.Sprintf("[%s](%s)", l, path.Join("/logseq-pages", slug)),
+	// 		)
+	// 	}
+	// 	// TODO find out what properties should I not quote
+	// 	err = afero.WriteFile(
+	// 		appFS,
+	// 		exportPath,
+	// 		[]byte(render(transformAttributes(page.pc.attributes, config.UnquotedProperties), contentWithAssets)),
+	// 		0644,
+	// 	)
+	// 	if err != nil {
+	// 		return fmt.Errorf("copying file %q failed: %v", exportPath, err)
+	// 	}
+	// }
 	return nil
 }
 

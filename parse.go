@@ -152,7 +152,6 @@ func parseContent(rawContent string) parsedContent {
 	content := applyStringTransformers(rawContent,
 		stripAttributes,
 		removeEmptyBulletPoints,
-		removePrivateContent,
 		unindentMultilineStrings,
 		firstBulletPointsToParagraphs,
 		// since we turned the first bullet points to paragraphs
