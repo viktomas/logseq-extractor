@@ -28,8 +28,8 @@ blog_content_folder="${BLOG_CONTENT_FODLER:-/graph}"
 images_folder="${BLOG_IMAGES_FOLDER:-/assets/graph}"
 
 # by default the files get copied as follows
-# - /logseq-pages -> /content/graph
-# - /logseq-assets -> /static/assets/graph
+# - /knowledge-pages -> /content/graph
+# - /knowledge-assets -> /static/assets/graph
 pages_destination="$blog_folder/content$blog_content_folder"
 assets_destination="$blog_folder/static$images_folder"
 
@@ -41,15 +41,15 @@ rm -rf "$assets_destination"
 mkdir -p "$pages_destination"
 mkdir -p "$assets_destination"
 
-# Move the content of logseq-pages to the new destination
-cp -R "$export_folder/logseq-pages"/* "$pages_destination/"
+# Move the content of knowledge-pages to the new destination
+cp -R "$export_folder/knowledge-pages"/* "$pages_destination/"
 
-# Move the content of logseq-assets to the new destination
-cp -R "$export_folder/logseq-assets"/* "$assets_destination/"
+# Move the content of knowledge-assets to the new destination
+cp -R "$export_folder/knowledge-assets"/* "$assets_destination/"
 
-# replace the /logseq-asstes/ paths with the hugo image folder
-find "$pages_destination" -type f -exec sed -i.bak -e "s@/logseq-assets/@$images_folder/@g" {} \;
-find "$pages_destination" -type f -exec sed -i.bak -e "s@/logseq-pages/@$blog_content_folder/@g" {} \;
+# replace the /knowledge-asstes/ paths with the hugo image folder
+find "$pages_destination" -type f -exec sed -i.bak -e "s@/knowledge-assets/@$images_folder/@g" {} \;
+find "$pages_destination" -type f -exec sed -i.bak -e "s@/knowledge-pages/@$blog_content_folder/@g" {} \;
 rm -f "$pages_destination"/*.bak
 
 echo "Content moved successfully."
